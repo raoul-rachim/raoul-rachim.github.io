@@ -125,14 +125,18 @@ const records = await loadRecords();
                     </section>
 
                     <section class="achievement-media">
-                        <figure class="achievement-video">
-                            <iframe src={`https://www.youtube.com/embed/${record.VideoURL}?autoplay=0&modestbranding=1&showinfo=0`}
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen width="360" height="640">
-                            </iframe>
-                            <figcaption>{record.VideoCaption}</figcaption>
-                        </figure>
+                        <!--<figure class="achievement-video">-->
+                        <!--    <iframe src={`https://www.youtube.com/embed/${record.VideoURL}?autoplay=0&modestbranding=1&showinfo=0`}-->
+                        <!--            frameborder="0"-->
+                        <!--            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"-->
+                        <!--            allowfullscreen width="360" height="640">-->
+                        <!--    </iframe>-->
+                        <!--    <figcaption>{record.VideoCaption}</figcaption>-->
+                        <!--</figure>-->
+
+                        <div class="player-wrapper">
+                            <div class="plyr__video-embed" data-plyr-provider="youtube" data-plyr-embed-id={record.VideoURL}></div>
+                        </div>
                     </section>
                     {record.Tags && record.Tags.length > 0 && (
                             <footer class="achievement-tags">
@@ -146,6 +150,21 @@ const records = await loadRecords();
                     )}
                 </article>)
     })}
+    <script>
+        import Player from "plyr"
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Initialize all video players
+            const players = Player.setup('.plyr__video-embed',{
+                youtube: {
+                    noCookie: true,
+                    rel: 0,
+                },
+            });
+            console.log("Plyr players initialized:", players.length);
+        });
+
+    </script>
 </Layout>
 
 

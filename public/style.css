@@ -161,3 +161,15 @@ footer {
     font-size: 0.875rem;
     color: #666;
 }
+
+.player-wrapper {
+    aspect-ratio: 9 / 16 !important;
+    max-width: 360px;
+    margin: auto;
+}
+div.plyr__video-wrapper.plyr__video-embed{
+    aspect-ratio: 9 / 16 !important;
+}
+div.plyr__poster{
+    background-size: cover !important;
+}
