@@ -10,10 +10,13 @@ async function loadRecords(): Promise<Array<{
     Tags?: Array<string>,
     Content?: string
 }>> {
-    const response = await fetch(
-        "https://docs.google.com/spreadsheets/d/1IH23jkQsvjR_OXBCVdqrfm_JqajztWLkf0zAhjcod2U/gviz/tq?tqx=out:json"
-    );
-    const text = await response.text();
+    // const response = await fetch(
+    //     "https://docs.google.com/spreadsheets/d/1IH23jkQsvjR_OXBCVdqrfm_JqajztWLkf0zAhjcod2U/gviz/tq?tqx=out:json"
+    // );
+    // const text = await response.text();
+
+    const text = `/*O_o*/
+google.visualization.Query.setResponse({"version":"0.6","reqId":"0","status":"ok","sig":"345556718","table":{"cols":[{"id":"A","label":"Title","type":"string"},{"id":"B","label":"SubTitle","type":"string"},{"id":"C","label":"VideoURL","type":"string"},{"id":"D","label":"VideoCaption","type":"string"},{"id":"E","label":"Date","type":"date","pattern":"M/d/yyyy"},{"id":"F","label":"Tags","type":"string"},{"id":"G","label":"Content","type":"string"}],"rows":[{"c":[{"v":"Hello World"},{"v":"Hello World Example For first time"},{"v":"https://www.youtube.com/shorts/ejczF2a9isQ?feature=share"},null,{"v":"Date(2025,4,1)","f":"5/1/2025"},{"v":"Cooking, Swimming, Judo, Finance"},{"v":"This is example video that for the first time we are trying hopefully this went well im not sure if this going to be successfull or not."}]},{"c":[{"v":"Second data"},{"v":"Another data"},{"v":"https://www.youtube.com/watch?v=uCoU8A4lPaM"},{"v":"something"},null,null,{"v":"hello"}]}],"parsedNumHeaders":1}});`;
     const json = JSON.parse(text.substring(47).slice(0, -2));
     const columns = json.table.cols.map(c => c.label);
     const records = [];
@@ -24,12 +27,12 @@ async function loadRecords(): Promise<Array<{
             const colKey = columns[i];
             data[colKey] = cols[i]?.v ?? ''
             if (colKey === 'Tags') {
-                data[colKey] = data[colKey].split(' ').filter(i => i.trim().length > 0);
+                data[colKey] = data[colKey].split(',').filter(i => i.trim().length > 0);
             }
             if (colKey === 'VideoURL') {
                 data[colKey] = extractYouTubeVideoID(data[colKey]);
             }
-            if(colKey === 'Date'){
+            if (colKey === 'Date') {
                 data[colKey] = formatCustomDate(data[colKey]);
             }
         }
@@ -75,8 +78,8 @@ function formatCustomDate(input) {
     const [_, year, month, day] = match.map(Number);
     const date = new Date(year, month, day);
 
-    const dayStr = customPadStart(date.getDate(),2,'0');
-    const monthStr = date.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+    const dayStr = customPadStart(date.getDate(), 2, '0');
+    const monthStr = date.toLocaleString('en-US', {month: 'short'}).toUpperCase();
     const yearStr = date.getFullYear();
 
     return `${dayStr}-${monthStr}-${yearStr}`;
@@ -97,7 +100,6 @@ function customPadStart(str, targetLength, padChar = ' ') {
 const records = await loadRecords();
 ---
 <Layout>
-
     <section class="hero">
         <div class="container">
             <h1>Hi, I'm <span class="highlight">Raoul Rachim</span> 👋</h1>
@@ -126,16 +128,20 @@ const records = await loadRecords();
 
                     <section class="achievement-media">
                         <!--<figure class="achievement-video">-->
-                        <!--    <iframe src={`https://www.youtube.com/embed/${record.VideoURL}?autoplay=0&modestbranding=1&showinfo=0`}-->
+                        <!--
+                        <iframe src={`https://www.youtube.com/embed/${record.VideoURL}?autoplay=0&modestbranding=1&showinfo=0`}
+                        -->
                         <!--            frameborder="0"-->
-                        <!--            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"-->
+                        <!--            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        -->
                         <!--            allowfullscreen width="360" height="640">-->
                         <!--    </iframe>-->
                         <!--    <figcaption>{record.VideoCaption}</figcaption>-->
                         <!--</figure>-->
 
                         <div class="player-wrapper">
-                            <div class="plyr__video-embed" data-plyr-provider="youtube" data-plyr-embed-id={record.VideoURL}></div>
+                            <div class="plyr__video-embed" data-plyr-provider="youtube"
+                                 data-plyr-embed-id={record.VideoURL}></div>
                         </div>
                     </section>
                     {record.Tags && record.Tags.length > 0 && (
@@ -155,13 +161,12 @@ const records = await loadRecords();
 
         document.addEventListener("DOMContentLoaded", () => {
             // Initialize all video players
-            const players = Player.setup('.plyr__video-embed',{
+            const players = Player.setup('.plyr__video-embed', {
                 youtube: {
                     noCookie: true,
                     rel: 0,
                 },
             });
-            console.log("Plyr players initialized:", players.length);
         });
 
     </script>
